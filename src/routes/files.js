@@ -2,8 +2,8 @@ const { Router } = require('express');
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv');
 const router = Router();
-const { conectar, addContact } = require('./dbConection');
-const bcryt = require('bcryptjs')
+const { conectar, addContact, connector } = require('./dbConection');
+const bcryt = require('bcryptjs');
 
 
 
@@ -25,15 +25,67 @@ router.get('/registro', (req, res) => {
 
 router.post('/registro', (req, res) => {
     const { user, password } = req.body;
-    let cedula = datat[0];
-    let name = datat[1];;
-    let lastName = datat[2];;
-    let date = datat[3];;
+    const errors = [];
+    if (user == '' || password == '') {
+        errors.push({ text: 'Llene todos los campos' });
+    } else {
+        const contact = () => {
+            const sql = `SELECT * FROM registre`;
 
-    addContact(cedula, name, lastName, date, user, password);
+            connector.query(sql, (err, result, filed) => {
 
-    console.log("Info enviada");
-    res.redirect('/files');
+                finContact(result, user);
+            });
+
+        }
+
+        function finContact(data, userr) {
+            const errors = [];
+
+            for (i = 0; i < data.length; i++) {
+                const userDes = bcryt.compareSync(userr, data[i].user);
+                if (userDes) {
+                    errors.push({ text: 'El usuario ya existe' });
+                }
+            }
+
+            if (errors.length > 0) {
+
+                res.render('registro', {
+                    errors
+                });
+            } else {
+                let cedula = datat[0];
+
+                const salt = bcryt.genSaltSync();
+                const passwordCryt = bcryt.hashSync(password, salt);
+                const userCryt = bcryt.hashSync(user, salt);
+
+
+
+                addContact(cedula, userCryt, passwordCryt);
+
+                console.log("Info enviada");
+                res.render('files');
+
+            }
+
+        }
+        contact();
+
+
+
+    }
+
+
+
+    if (errors.length > 0) {
+
+        res.render('registro', {
+            errors
+        });
+    }
+
 
 });
 
@@ -47,21 +99,67 @@ router.get('/files', (req, res) => {
 router.post('/file', (req, res) => {
     const { cedula } = req.body;
     let params = { Bucket: 'storage-app-notes', Key: 'file.csv' };
+    const contact = () => {
+        const sql = `SELECT * FROM registre`;
+
+        connector.query(sql, (err, result, filed) => {
+            finContactFile(result, cedula);
+        });
+
+    }
+
+    function finContactFile(data, cedula) {
+        const errors = [];
+        console.log("Data",data);
+        for (i = 0; i < data.length; i++) {
+            if (data[i].cedula == cedula) {
+                errors.push({ text: 'Al usuario ya se le realizo un registro' });
+            }
+        }
+        if (errors.length > 0) {
+            res.render('files', {
+                errors
+            });
+        } else {
+            res.render('registro');
+        }
+
+
+    }
+
+
 
 
     function val(data) {
-        if (data != null) {
+        const errors = [];
+        if (data != null && data != '') {
+            contact();
             datat = data;
-            res.redirect('/registro');
+
 
         } else {
-            console.log("No user");
+            if (data == null) {
+                errors.push({ text: 'El usuario no existe' });
+            }
+            if (data == '') {
+                errors.push({ text: 'Llene los campos' });
+            }
+
+
+
+
+        }
+
+        if (errors.length > 0) {
+            res.render('files', {
+                errors
+            });
+
         }
 
     }
 
     function asingValues(data) {
-        console.log("-----------------------------------")
         for (i = 0; i <= data.length; i++) {
             if (data[i] != null) {
                 return data[i];
@@ -91,7 +189,9 @@ router.post('/file', (req, res) => {
 
 
     const s3download = function(params, cedula) {
+
         return new Promise((resolve, reject) => {
+        
             s3.createBucket({
                 Bucket: 'storage-app-notes' /* Put your bucket name */
             }, function() {
@@ -99,8 +199,11 @@ router.post('/file', (req, res) => {
                     if (err) {
                         reject(err);
                     } else {
+
                         resolve(data);
                         val(asingValues(readFile(data.Body.toString(), cedula)));
+
+
                     }
                 });
             });

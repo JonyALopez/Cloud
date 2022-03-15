@@ -4,6 +4,7 @@ const path = require('path');
 const exphbs = require('express-handlebars');
 const Handlebars = require('handlebars');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+const flash = require('connect-flash');
 
 
 dotenv.config();
@@ -23,5 +24,9 @@ app.use(express.urlencoded({ extended: false }));
 //rutes
 app.use(require('./routes/files'));
 app.use(require('./routes/login'));
+app.use(require('./routes/index'));
+
+
+
 
 app.use(express.static(path.join(__dirname, 'public')));

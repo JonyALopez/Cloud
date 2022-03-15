@@ -1,0 +1,41 @@
+.background{
+   background: linear-gradient(to bottom right,white, lightblue);
+   height: 100%;
+   padding-bottom: 37%;
+}
+
+.menu{
+   background-color: lightblue;
+   height: 45px;
+}
+
+.form{
+   margin-left: 40%;
+   margin-right: 40%;
+   margin-top: 5%;
+   border: 1px solid black;
+   border-radius: 10px;
+   padding: 20px;
+   background-color: white;
+   box-shadow: 2px 2px 5px #999;
+}
+
+.text{
+   text-align: center;
+}
+
+.input{
+   width: 100%;
+}
+
+.img{
+   display: block;
+   margin: auto;
+   width: 30%;
+}
+
+.info{
+   margin-left: 40%;
+   margin-right: 40%;
+   margin-top: 5%;
+}

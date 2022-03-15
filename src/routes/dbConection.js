@@ -17,8 +17,8 @@ const conectar = () => {
         console.log('conectado a mysql')
     });
 }
-const addContact = (cedula, name, lastName, date, user, password) => {
-    const sql = `INSERT INTO registre (id, cedula, name, lastName, date, user, password) VALUES (${null}, "${cedula}","${name}","${lastName}","${date}","${user}","${password}")`
+const addContact = (cedula, user, password) => {
+    const sql = `INSERT INTO registre (cedula, user, password) VALUES ("${cedula}","${user}","${password}")`
     connector.query(sql, (err, result, filed) => {
         if (err) throw err
         console.log(result);
@@ -26,4 +26,4 @@ const addContact = (cedula, name, lastName, date, user, password) => {
     });
 
 }
-module.exports = { conectar, addContact };
+module.exports = { conectar, addContact, connector };
