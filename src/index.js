@@ -24,7 +24,6 @@ app.use(express.urlencoded({ extended: false }));
 //rutes
 app.use(require('./routes/files'));
 app.use(require('./routes/login'));
-app.use(require('./routes/index'));
 
 
 

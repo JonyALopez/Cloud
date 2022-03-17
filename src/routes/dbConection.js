@@ -3,12 +3,11 @@ const Connection = require('mysql/lib/Connection');
 
 
 const connector = mysql.createConnection({
-    host: 'localhost',
+    host: '0.tcp.ngrok.io',
     user: 'root',
-    password: 'root',
-    database: 'registros'
-
-
+    password: '1234',
+    database: 'registros',
+    port: '14917',
 });
 
 const conectar = () => {

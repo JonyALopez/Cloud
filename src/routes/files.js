@@ -98,6 +98,7 @@ router.get('/files', (req, res) => {
 
 router.post('/file', (req, res) => {
     const { cedula } = req.body;
+
     let params = { Bucket: 'storage-app-notes', Key: 'file.csv' };
     const contact = () => {
         const sql = `SELECT * FROM registre`;
@@ -121,6 +122,7 @@ router.post('/file', (req, res) => {
                 errors
             });
         } else {
+            
             res.render('registro');
         }
 

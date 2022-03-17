@@ -119,7 +119,7 @@ router.post('/login', (req, res) => {
                                 passwordd
                             })
                             
-                        }, 2000);;
+                        }, 3000);
                         
                     } else {
                         errors.push({ text: 'Contraseña invalida' });
